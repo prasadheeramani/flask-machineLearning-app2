@@ -1,52 +1,33 @@
-# from flask import Flask, render_template, request
-from flask import Flask, request, jsonify,render_template
-
-import pandas as pd
 import numpy as np
-# from sklearn.externals import joblib
+from flask import Flask, request, jsonify, render_template
+import pickle
 
 app = Flask(__name__)
+model = pickle.load(open('model.pkl', 'rb'))
 
 @app.route('/')
 def home():
     return render_template('home.html')
 
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/predict',methods=['POST'])
 def predict():
-    if request.method == 'POST':
-        try:
-            ID = int(request.form['ID'])
-            Shop_ID = int(request.form['Shop_ID'])
-            Item_ID = int(request.form['Item_ID'])
-            pred_args = [ID, Shop_ID, Item_ID]
-            print(pred_args)
 
-        except valueError:
-            return "Please check values"
+    int_features = [int(x) for x in request.form.values()]
+    final_features = [np.array(int_features)]
+    prediction = model.predict(final_features)
 
+    output = round(prediction[0], 2)
 
+    return render_template('index.html', prediction_text='Sales should be $ {}'.format(output))
 
-# @app.route('/predict', methods=['GET', 'POST'])
-# def predict():
-#     if request.method == 'POST':
-#         try:
-#             ID = int(request.form['ID'])
-#             Shop_ID = int(request.form['Shop_ID'])
-#             Item_ID = int(request.form['Item_ID'])
-#             pred_args = [ID, Shop_ID, Item_ID]
-#             pred_args_array = np.array(pred_args)
-#             pred_args_array = pred_args_array.reshape((1,-1))
+@app.route('/results',methods=['POST'])
+def results():
 
-#             model = open('model.pkl', 'rb')
-#             ml_model = joblib.load(model)
+    data = request.get_json(force=True)
+    prediction = model.predict([np.array(list(data.values()))])
 
-#             model_prediction = ml_model.predict(pred_args_array)
-            
-#         except valueError:
-#             return "Please check if all values are correct."
-
-#     return render_template('predict.html', prediction=model_prediction)
-
+    output = prediction[0]
+    return jsonify(output)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
