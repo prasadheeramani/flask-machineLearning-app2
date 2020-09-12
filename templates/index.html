@@ -3,37 +3,103 @@
 <!--From https://codepen.io/frytyler/pen/EGdtg-->
 
 <head>
-  <meta charset="UTF-8">
-  <title>ML API</title>
-  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-
+	<meta charset="UTF-8">
+	<title>API</title>
+	<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 
 <body>
-  <div class="login">
-    <h1>Predict Analysis</h1>
+	<h1>
+		<div style="text-align:center">
+			<font color="blue">Sales prediction</font>
+		</div>
+	</h1>
+	<hr>
+	</br>
+	<h2>
+		<div style="text-align:center">Enter the values for Shop_ID, Item_ID, Month, Year.
+		</div>
+	</h2>
+	</br>
 
-    <!-- Main Input For Receiving Query to our ML -->
-    <form action="{{ url_for('predict')}}" method="post">
+	<div class='container'>
+		<div class='row'>
+			<div class='col-6'>
+				<!-- <form method="POST" action="/predict"> -->
+				<form action="{{ url_for('predict')}}" method="post">
+					<div class="form-group">
+						<label for="Shop_ID">
+							<p class="font-weight-bold">Shop_ID</p>
+						</label>
+						<input type="text" name="Shop_ID" placeholder="Shop_ID" , required="required">
 
-      <input type="text" name="shop_id" placeholder="shop_id" required="required" />
-      <input type="text" name="item_id" placeholder="item_id" required="required" />
-      <input type="text" name="month" placeholder="month" required="required" />
-      <input type="text" name="year" placeholder="year" required="required" />
-      <!-- <input type="text" name="date_block_num" placeholder="date_block_num" required="required" /> -->
-      <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
-    </form>
+					</div>
 
-    <br>
-    <br>
-    {{ prediction_text }}
+					<div class="form-group">
+						<label for="Item_ID">
+							<p class="font-weight-bold">Item_ID</p>
+						</label>
+						<input type="text" name="Item_ID" placeholder="Item_ID" , required="required">
 
-  </div>
+					</div>
+
+					<div class="form-group">
+						<label for="month">
+							<p class="font-weight-bold">month</p>
+						</label>
+						<input type="text" name="month" placeholder="month" required="required">
+
+					</div>
+
+					<div class="form-group">
+						<label for="Year">
+							<p class="font-weight-bold">Year</p>
+						</label>
+						<input type="text" name="Year" placeholder="Year" required="required">
+
+					</div>
 
 
+
+					<input class='btn btn-primary' type='submit' value='Submit'>
+				</form>
+
+				<br>
+				<br>
+				{{ prediction_text }}
+
+			</div>
+		</div>
+	</div>
 </body>
+
+
+<!-- <body>
+	<div class="login">
+		<h1>Predict Future Sales</h1>
+
+
+		<form action="{{ url_for('predict')}}" method="post">
+
+			<input type="text" name="shop_id" placeholder="shop_id" required="required" />
+			<input type="text" name="item_id" placeholder="item_id" required="required" />
+			<input type="text" name="month" placeholder="month" required="required" />
+			<input type="text" name="year" placeholder="year" required="required" />
+			<button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+		</form>
+
+		<br>
+		<br>
+		{{ prediction_text }}
+
+	</div>
+
+
+</body> -->
 
 </html>
