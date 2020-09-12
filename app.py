@@ -2,7 +2,6 @@ import pickle
 import pandas as pd
 import numpy as np
 from flask import Flask, request, jsonify, render_template
-import pickle
 
 app = Flask(__name__)
 
@@ -52,6 +51,22 @@ def predict():
     int_features = [int(x) for x in request.form.values()]
     prediction = ValuePredictor(int_features)
     return render_template('index.html', prediction_text='Predicted Sale is: {}'.format(prediction))
+
+@app.route('/api',methods=['POST'])
+def api():
+    '''
+    For direct API calls trought request
+    '''
+    data = request.get_json(force=True)
+    
+    int_features = list(data.values())
+    prediction = ValuePredictor(int_features)
+
+    print("data:", data)
+    print("Prediction:", prediction)
+
+    output = str(prediction[0])
+    return jsonify(output)
 
 if __name__ == "__main__":
     app.run(debug=True)
