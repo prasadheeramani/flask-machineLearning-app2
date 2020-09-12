@@ -5,67 +5,53 @@ from flask import Flask, request, jsonify, render_template
 import pickle
 
 app = Flask(__name__)
-# model = pickle.load(open('model.pkl', 'rb'))
 
+#Load model saved in model.pkl
 model=pickle.load(open('model.pkl','rb'))
+
+#load shops_data which have all shops, it is used for merging with another table
 shops = pd.read_csv('shops_data.csv')
 shops = shops[['shop_id', 'shop_category', 'shop_city']]
 
+#load items_data which have all shops, it is used for merging with another table
 items = pd.read_csv('items_data.csv')
-items = items[['item_id', 'item_category_id', 'name2', 'name3',
-       'item_price', 'subtype_code', 'type_code']]
+items = items[['item_id', 'item_category_id', 'name2', 'name3','item_price', 'subtype_code', 'type_code']]
 
+#Index homepage
 @app.route('/')
 def home():
     return render_template('index.html')
 
+"""
+ValuePredictor function return predicted value for a single tuple
+"""
 def ValuePredictor(values):
-    keys = ["date_block_num", "shop_id", "item_id"]
-#     values = [10,20,30]
-
+    #Created tuple column name
+    keys = ["shop_id", "item_id", "month", "year"]
     dict_ = dict(zip(keys, values))
-
-#     print(dict_)
-    train = pd.DataFrame.from_dict(dict_, orient='index').T
+    persistent_value = pd.DataFrame.from_dict(dict_, orient='index').T
     
-    
-    train=pd.merge(train,items,on=['item_id'],how='inner')
-    train=pd.merge(train,shops,on=['shop_id'],how='inner')
-    train.sort_values(["date_block_num", "shop_id", "item_id"], inplace = True )
-    train=train.reset_index(drop=True)
-
-    train["month"] = train["date_block_num"] % 12
+    persistent_value['date_block_num'] = (persistent_value['year'] - 2013) * 12 + persistent_value['month'] - 1
     days = pd.Series([31,28,31,30,31,30,31,31,30,31,30,31])
-    train["days"] = train["month"].map(days).astype(np.int8)
-    train["year"] = 2013+(train["date_block_num"]/12).astype(np.int16)
-    train['month']=train['month']+1
+    persistent_value["days"] = persistent_value["month"].map(days).astype(np.int8)
+
+    persistent_value=pd.merge(persistent_value,items,on=['item_id'],how='inner')
+    persistent_value=pd.merge(persistent_value,shops,on=['shop_id'],how='inner')
+    persistent_value.sort_values(["date_block_num", "shop_id", "item_id"], inplace = True )
+    persistent_value=persistent_value.reset_index(drop=True)
     
-    t = train[['date_block_num', 'shop_id', 'item_id', 'shop_category', 'shop_city',
+    test_tuple = persistent_value[['date_block_num', 'shop_id', 'item_id', 'shop_category', 'shop_city',
        'item_category_id', 'name2', 'name3', 'subtype_code', 'type_code', 'days', 'month', 'year',
        'item_price', ]]
-    return model.predict(t)
-
+    return abs(model.predict(test_tuple))
 
 
 
 @app.route('/predict',methods=['POST'])
 def predict():
-    '''
-    For rendering results on HTML GUI
-    '''
     int_features = [int(x) for x in request.form.values()]
-    # final_features = [np.array(int_features)]
-
-    print(int_features)
-
     prediction = ValuePredictor(int_features)
-    print(prediction)
-
-    # output = round(prediction[0], 2)
-    # print(output)
-
-    return render_template('index.html', prediction_text='Prediction is: {}'.format(prediction))
-
+    return render_template('index.html', prediction_text='Predicted Sale is: {}'.format(prediction))
 
 if __name__ == "__main__":
     app.run(debug=True)

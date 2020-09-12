@@ -18,10 +18,12 @@
 
     <!-- Main Input For Receiving Query to our ML -->
     <form action="{{ url_for('predict')}}" method="post">
-      <input type="text" name="date_block_num" placeholder="date_block_num" required="required" />
+
       <input type="text" name="shop_id" placeholder="shop_id" required="required" />
       <input type="text" name="item_id" placeholder="item_id" required="required" />
-
+      <input type="text" name="month" placeholder="month" required="required" />
+      <input type="text" name="year" placeholder="year" required="required" />
+      <!-- <input type="text" name="date_block_num" placeholder="date_block_num" required="required" /> -->
       <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
     </form>
 
