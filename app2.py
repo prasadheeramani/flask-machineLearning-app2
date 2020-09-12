@@ -11,20 +11,23 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/hello', method=['GET'])
+def index():
+    return "Hello World"
+
+
+@app.route('/predict',methods=['POST'])
 def predict():
-    if request.method == 'POST':
-        try:
-            ID = int(request.form['ID'])
-            Shop_ID = int(request.form['Shop_ID'])
-            Item_ID = int(request.form['Item_ID'])
-            pred_args = [ID, Shop_ID, Item_ID]
-            print(pred_args)
+    '''
+    For rendering results on HTML GUI
+    '''
+    int_features = [int(x) for x in request.form.values()]
+    final_features = [np.array(int_features)]
+    prediction = model.predict(final_features)
 
-        except valueError:
-            return "Please check values"
+    output = round(prediction[0], 2)
 
-
+    return render_template('index.html', prediction_text='Employee Salary should be $ {}'.format(output))
 
 # @app.route('/predict', methods=['GET', 'POST'])
 # def predict():
@@ -34,18 +37,37 @@ def predict():
 #             Shop_ID = int(request.form['Shop_ID'])
 #             Item_ID = int(request.form['Item_ID'])
 #             pred_args = [ID, Shop_ID, Item_ID]
-#             pred_args_array = np.array(pred_args)
-#             pred_args_array = pred_args_array.reshape((1,-1))
+#             print(pred_args)
 
-#             model = open('model.pkl', 'rb')
-#             ml_model = joblib.load(model)
-
-#             model_prediction = ml_model.predict(pred_args_array)
-            
 #         except valueError:
-#             return "Please check if all values are correct."
+#             return "Please check values"
 
-#     return render_template('predict.html', prediction=model_prediction)
+
+
+# @app.route('/api', methods=['GET', 'POST'])
+# def predict():
+#     if request.method == 'POST':
+#         try:
+#             print(request)
+#             print("Hello")
+
+            # return "Hello World"
+            # ID = int(request.form['ID'])
+            # Shop_ID = int(request.form['Shop_ID'])
+            # Item_ID = int(request.form['Item_ID'])
+            # pred_args = [ID, Shop_ID, Item_ID]
+            # pred_args_array = np.array(pred_args)
+            # pred_args_array = pred_args_array.reshape((1,-1))
+
+            # model = open('model.pkl', 'rb')
+            # ml_model = joblib.load(model)
+
+            # model_prediction = ml_model.predict(pred_args_array)
+            
+        except valueError:
+            return "Please check if all values are correct."
+
+    # return render_template('predict.html', prediction=model_prediction)
 
 
 if __name__ == "__main__":
