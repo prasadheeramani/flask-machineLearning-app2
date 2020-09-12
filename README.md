@@ -9,3 +9,6 @@ We are asking you to predict total sales for every product and store in the next
 
 All data files can be downloaded from here:https://www.kaggle.com/c/competitive-data-science-predict-future-sales/data
 
+Datasets are stored in kaggle\input\competitive-data-science-predict-future-sales\
+
+model.pkl is trained model.
