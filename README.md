@@ -12,3 +12,5 @@ All data files can be downloaded from here:https://www.kaggle.com/c/competitive-
 Datasets are stored in kaggle\input\competitive-data-science-predict-future-sales\
 
 model.pkl is trained model.
+
+Flask app is hosted at Heroku at url: https://future-sales-prediction.herokuapp.com/
